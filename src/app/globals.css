@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
+@theme {
+  /* ── Colors ─────────────────────────────────────────────────────────── */
+  --color-burg-deep: #5C1828;
+  --color-burg-mid: #8B2A3F;
+  --color-burg-pale: #F5EAED;
+  --color-ivory: #FAF7F2;
+  --color-cream: #EDE0CC;
+  --color-warm-dark: #1A0F0D;
+  --color-warm-mid: #6B5244;
+  --color-warm-light: #A89282;
+  --color-gold-accent: #C9A84C;
+  --color-white-glass: rgba(255, 255, 255, 0.92);
+  --color-dark-scrim: rgba(15, 6, 4, 0.40);
+
+  /* ── Font Families ───────────────────────────────────────────────────── */
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+
+  /* ── Font Sizes (creates text-* utilities) ───────────────────────────── */
+  --text-hero: 96px;
+  --text-hero-sm: 64px;
+  --text-section: 52px;
+  --text-card-title: 22px;
+  --text-body-lg: 18px;
+  --text-body: 16px;
+  --text-label: 12px;
+  --text-caption: 13px;
+
+  /* ── Border Radius ───────────────────────────────────────────────────── */
+  --radius-search: 16px;
+  --radius-card: 14px;
+  --radius-dest: 12px;
+  --radius-btn: 7px;
+  --radius-nav-btn: 6px;
+}
+
+.date{
+  color: white;
+}
+
+/* ── Spacing tokens — reference with var() in components ─────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ── Type scale detail — line-height and tracking per spec ───────────── */
+  --leading-hero: 0.95;
+  --leading-hero-sm: 1.0;
+  --leading-section: 1.1;
+  --leading-card-title: 1.25;
+  --leading-body-lg: 1.65;
+  --leading-body: 1.65;
+  --leading-label: 1.4;
+  --leading-caption: 1.5;
+
+  --tracking-hero: -0.02em;
+  --tracking-hero-sm: -0.01em;
+  --tracking-section: -0.01em;
+  --tracking-label: 0.10em;
+  --tracking-caption: 0.02em;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Chrome, Safari, Edge, Opera */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Firefox */
+html,
+body,
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* ── Reduced motion — disables all transitions per spec ──────────────── */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
