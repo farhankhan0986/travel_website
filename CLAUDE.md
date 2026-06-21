@@ -1,12 +1,12 @@
-# Tripile — Project Rules
+# Tripile Project Rules
 
 ## Stack
 Next.js 14 App Router, TypeScript, Tailwind CSS, MongoDB with Mongoose, NextAuth.js, Stripe, Amadeus API, Resend for emails.
 
 ## Design
-- Full design spec is in tripile-design-spec.md — read it before building any UI component
+- Full design spec is in tripile-design-spec.md read it before building any UI component
 - Colors, fonts, spacing, and radius all come from CSS variables in globals.css
-- No hardcoded hex values in any component — only Tailwind classes or var() references
+- No hardcoded hex values in any component only Tailwind classes or var() references
 - No gradients, no neon, no shadows except functional ones
 - Minimum 16px font size everywhere in the UI
 - No em dashes or en dashes in any UI copy

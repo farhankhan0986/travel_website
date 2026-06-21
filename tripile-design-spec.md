@@ -1,4 +1,4 @@
-# Tripile — Design Specification
+# Tripile Design Specification
 
 > US-focused travel booking for the 50+ traveler. Phone-first. Premium. Cinematic.
 
@@ -6,7 +6,7 @@
 
 ## 1. Design Philosophy
 
-The four references share one thing: **the photography is the product**. No UI chrome competes with the image. Type sits on top of it — large, confident, and minimal. The search form floats at the bottom edge like a caption, not a form.
+The four references share one thing: **the photography is the product**. No UI chrome competes with the image. Type sits on top of it large, confident, and minimal. The search form floats at the bottom edge like a caption, not a form.
 
 Tripile takes the same stance but adds warmth and trust signals that work for a 50+ American audience. The editorial grandeur of the references, filtered through the authority of a burgundy-and-ivory palette and a serif that reads like a luxury print magazine.
 
@@ -46,7 +46,7 @@ The one rule above all: **if a UI element feels like a travel booking website, r
 
 ### Why these
 
-Cormorant Garamond has the same editorial weight as Playfair Display (reference 3) but is narrower and more refined at large sizes. It supports the italic that makes the hero headline feel alive. DM Sans is geometric but has warmth — it avoids the coldness of Inter while staying fully legible at 14px+ for older eyes.
+Cormorant Garamond has the same editorial weight as Playfair Display (reference 3) but is narrower and more refined at large sizes. It supports the italic that makes the hero headline feel alive. DM Sans is geometric but has warmth it avoids the coldness of Inter while staying fully legible at 14px+ for older eyes.
 
 ### Type scale
 
@@ -230,10 +230,10 @@ In order, top to bottom:
 | 2 | Hero (video + overlay + headline + stats + search) | 100vh |
 | 3 | Phone CTA strip | Always visible |
 | 4 | Trust strip | Icons + 4 stats |
-| 5 | How it works | 3 steps: Search, Call/Book, Fly. No numbered icons — illustrated inline. |
+| 5 | How it works | 3 steps: Search, Call/Book, Fly. No numbered icons illustrated inline. |
 | 6 | Popular destinations | 4-column card grid, real photography |
 | 7 | Why Tripile | Left: editorial copy. Right: agent photo. No bullet lists. |
-| 8 | Testimonials | 3 cards, real names, real ages ("Margaret, 67, Phoenix"). No star inflation — show honest 4-5 star range. |
+| 8 | Testimonials | 3 cards, real names, real ages ("Margaret, 67, Phoenix"). No star inflation show honest 4-5 star range. |
 | 9 | Second phone CTA | Large centered: "Prefer to speak with someone?" + number + hours |
 | 10 | Footer | Logo, nav links, phone, hours, legal |
 
@@ -307,7 +307,7 @@ To keep Tripile from drifting into AI-slop territory:
 
 The single element that makes Tripile memorable:
 
-**The search box sits half inside the hero and half below it** — anchored to the hero bottom edge, protruding 48px into the ivory section below. This creates a physical overlap between the cinematic world of the video and the functional world of booking. It references the Iceland reference (image 4) directly but works in Tripile's warmer, more trustworthy palette.
+**The search box sits half inside the hero and half below it** anchored to the hero bottom edge, protruding 48px into the ivory section below. This creates a physical overlap between the cinematic world of the video and the functional world of booking. It references the Iceland reference (image 4) directly but works in Tripile's warmer, more trustworthy palette.
 
 On video tab switch, the search form's tab indicator slides with a `transform` animation (not a color swap) so the user physically sees the context change.
 

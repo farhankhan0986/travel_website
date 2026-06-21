@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search, Calendar as CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/Calendar";
 
 type FlightValues = { tab: "flights"; from: string; to: string; departure: string };
 type HotelValues  = { tab: "hotels"; city: string; checkIn: string; checkOut: string };
@@ -11,29 +12,150 @@ export type SearchValues = FlightValues | HotelValues;
 interface SearchBoxProps {
   activeTab: "flights" | "hotels";
   setActiveTab: (tab: "flights" | "hotels") => void;
-  /** Override the outer wrapper's className. Defaults to hero absolute-protrusion positioning. */
   className?: string;
-  /** Called when the user clicks the search button. If omitted the button is decorative. */
   onSearch?: (values: SearchValues) => void;
 }
 
 function Separator() {
-  return <div className="hidden sm:block w-px self-stretch my-4 bg-cream" />;
+  return (
+    <div
+      className="hidden sm:block w-px self-stretch my-4"
+      style={{ background: "rgba(255,255,255,0.12)" }}
+    />
+  );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function TextField({
+  label,
+  placeholder,
+  value,
+  onChange,
+}: {
+  label: string;
+  placeholder: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
-    <div className="flex flex-col justify-center px-[16px] py-[12px] sm:px-5 sm:py-4 flex-1 min-w-0 border-b border-cream sm:border-b-0">
-      <span className="font-body text-[11px] uppercase tracking-[0.10em] text-black mb-1 select-none">
+    <div
+      className="flex flex-col justify-center px-[16px] py-[12px] sm:px-5 sm:py-4 flex-1 min-w-0 border-b sm:border-b-0"
+      style={{ borderColor: "rgba(255,255,255,0.10)" }}
+    >
+      <span
+        className="font-body text-[10px] uppercase tracking-[0.12em] mb-[6px] select-none"
+        style={{ color: "rgba(255,255,255,0.45)" }}
+      >
         {label}
       </span>
-      {children}
+      <input
+        type="text"
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="font-body text-[15px] bg-transparent outline-none w-full text-center placeholder:text-white/35"
+        style={{ color: "rgba(255,255,255,0.82)", caretColor: "#fff" }}
+      />
     </div>
   );
 }
 
-const inputClass =
-  "font-body text-[15px] text-white/70 placeholder:text-white/70 bg-transparent outline-none w-full";
+function DateField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: Date | undefined;
+  onChange: (d: Date | undefined) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [openUp, setOpenUp] = useState(true);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  // Close when clicking outside
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    if (open) document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  function handleToggle() {
+    if (!open && wrapRef.current) {
+      const rect = wrapRef.current.getBoundingClientRect();
+      // Open upward only if there's clearly more space above (>220px)
+      setOpenUp(rect.top > window.innerHeight - rect.bottom && rect.top > 220);
+    }
+    setOpen((o) => !o);
+  }
+
+  const display = value
+    ? value.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+    : null;
+
+  return (
+    <div
+      ref={wrapRef}
+      className="relative flex flex-col justify-center px-[16px] py-[12px] sm:px-5 sm:py-4 flex-1 min-w-0 border-b sm:border-b-0 cursor-pointer select-none"
+      style={{ borderColor: "rgba(255,255,255,0.10)" }}
+      onClick={handleToggle}
+    >
+      <span
+        className="font-body text-[10px] uppercase tracking-[0.12em] mb-[6px]"
+        style={{ color: "rgba(255,255,255,0.45)" }}
+      >
+        {label}
+      </span>
+
+      <div className="flex items-center justify-center gap-[7px]">
+        <CalendarIcon size={13} style={{ color: "rgba(255,255,255,0.50)", flexShrink: 0 }} />
+        <span
+          className="font-body text-[15px] text-center"
+          style={{ color: display ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.35)" }}
+        >
+          {display ?? "mm / dd / yyyy"}
+        </span>
+      </div>
+
+      {/* ── Dropdown Calendar  flips up or down based on viewport space ── */}
+      {open && (
+        <div
+          className="absolute left-1/2 -translate-x-1/2 z-[9999] rounded-[18px] overflow-hidden"
+          style={{
+            ...(openUp
+              ? { bottom: "calc(100% + 10px)" }
+              : { top: "calc(100% + 10px)" }),
+            background: "rgba(22,10,8,0.94)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            boxShadow: "0 16px 48px rgba(0,0,0,0.50)",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Calendar
+            mode="single"
+            selected={value}
+            onSelect={(d) => {
+              onChange(d);
+              setOpen(false);
+            }}
+            disabled={{ before: new Date() }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Convert Date → "yyyy-mm-dd" string for search payloads
+function fmt(d: Date | undefined) {
+  if (!d) return "";
+  return d.toISOString().split("T")[0];
+}
 
 export default function SearchBox({
   activeTab,
@@ -45,17 +167,17 @@ export default function SearchBox({
 
   const [from, setFrom]           = useState("");
   const [to, setTo]               = useState("");
-  const [departure, setDeparture] = useState("");
+  const [departure, setDeparture] = useState<Date | undefined>();
   const [city, setCity]           = useState("");
-  const [checkIn, setCheckIn]     = useState("");
-  const [checkOut, setCheckOut]   = useState("");
+  const [checkIn, setCheckIn]     = useState<Date | undefined>();
+  const [checkOut, setCheckOut]   = useState<Date | undefined>();
 
   function handleSearch() {
     if (onSearch) {
       if (activeTab === "flights") {
-        onSearch({ tab: "flights", from, to, departure });
+        onSearch({ tab: "flights", from, to, departure: fmt(departure) });
       } else {
-        onSearch({ tab: "hotels", city, checkIn, checkOut });
+        onSearch({ tab: "hotels", city, checkIn: fmt(checkIn), checkOut: fmt(checkOut) });
       }
     } else {
       router.push(activeTab === "flights" ? "/flights" : "/hotels");
@@ -64,109 +186,74 @@ export default function SearchBox({
 
   const outerClass =
     className ??
-    "absolute bottom-[100px] left-1/2 lg:left-[calc(50%+300px)] -translate-x-1/2 translate-y-[48px] z-30 w-full max-w-4xl px-6";
+    "absolute bottom-[100px] left-1/2 -translate-x-1/2 translate-y-[48px] z-30 w-full max-w-4xl px-6";
 
   return (
     <div className={outerClass}>
-      <div className="bg-white/15 backdrop-blur-md rounded-search border border-white/15 shadow-[0_8px_40px_rgba(15,6,4,0.22)]">
-
+      <div
+        className="rounded-[20px] border shadow-[0_8px_40px_rgba(15,6,4,0.28)]"
+        style={{
+          background: "rgba(255,255,255,0.10)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          borderColor: "rgba(255,255,255,0.15)",
+        }}
+      >
         {/* Tab row */}
-        <div className="flex gap-1 px-4 pt-3">
+        <div className="flex gap-[6px] px-[16px] pt-[14px]">
           {(["flights", "hotels"] as const).map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
-              className={[
-                "capitalize px-5 py-1.5 rounded-full font-body font-medium text-sm transition-colors duration-200",
+              className="capitalize px-[16px] py-[6px] rounded-full font-body font-medium text-[13px] transition-all duration-200"
+              style={
                 activeTab === tab
-                  ? "bg-burg-deep text-white"
-                  : "bg-transparent text-black hover:text-warm-dark",
-              ].join(" ")}
+                  ? { background: "#5C1828", color: "#fff", boxShadow: "0 2px 8px rgba(92,24,40,0.40)" }
+                  : { background: "transparent", color: "rgba(255,255,255,0.55)" }
+              }
             >
-              {tab}
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
         </div>
 
-        {/* Fields row — stacks vertically on mobile */}
+        {/* Fields row */}
         <div className="flex flex-col sm:flex-row items-stretch">
           {activeTab === "flights" ? (
             <>
-              <Field label="FROM">
-                <input
-                  type="text"
-                  placeholder="City or airport"
-                  className={inputClass}
-                  value={from}
-                  onChange={(e) => setFrom(e.target.value)}
-                />
-              </Field>
+              <TextField label="From" placeholder="City or airport" value={from} onChange={setFrom} />
               <Separator />
-              <Field label="TO">
-                <input
-                  type="text"
-                  placeholder="City or airport"
-                  className={inputClass}
-                  value={to}
-                  onChange={(e) => setTo(e.target.value)}
-                />
-              </Field>
+              <TextField label="To" placeholder="City or airport" value={to} onChange={setTo} />
               <Separator />
-              <Field label="DEPARTURE">
-                <input
-                  type="date"
-                  className={inputClass}
-                  value={departure}
-                  onChange={(e) => setDeparture(e.target.value)}
-                />
-              </Field>
+              <DateField label="Departure" value={departure} onChange={setDeparture} />
             </>
           ) : (
             <>
-              <Field label="CITY">
-                <input
-                  type="text"
-                  placeholder="Where to?"
-                  className={inputClass}
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                />
-              </Field>
+              <TextField label="City" placeholder="Where to?" value={city} onChange={setCity} />
               <Separator />
-              <Field label="CHECK-IN">
-                <input
-                  type="date"
-                  className={inputClass}
-                  value={checkIn}
-                  onChange={(e) => setCheckIn(e.target.value)}
-                />
-              </Field>
+              <DateField label="Check-in" value={checkIn} onChange={setCheckIn} />
               <Separator />
-              <Field label="CHECK-OUT">
-                <input
-                  type="date"
-                  className={inputClass}
-                  value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                />
-              </Field>
+              <DateField label="Check-out" value={checkOut} onChange={setCheckOut} />
             </>
           )}
 
           {/* Search button */}
-          <div className="flex items-center justify-center py-[10px] sm:py-0 sm:pr-4 sm:pl-2">
+          <div className="flex items-center justify-center py-[12px] sm:py-0 sm:pr-[14px] sm:pl-[8px]">
             <button
               type="button"
               aria-label="Search"
               onClick={handleSearch}
-              className="w-[52px] h-[52px] rounded-full bg-burg-deep flex items-center justify-center hover:bg-burg-mid transition-colors duration-200 shrink-0"
+              className="w-[48px] h-[48px] rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shrink-0"
+              style={{
+                background: "linear-gradient(135deg, #5C1828, #8B2A3F)",
+                boxShadow: "0 4px 16px rgba(92,24,40,0.45)",
+              }}
             >
-              <Search size={20} className="text-white" aria-hidden />
+              <Search size={18} color="#fff" aria-hidden />
             </button>
           </div>
         </div>
-
       </div>
     </div>
   );

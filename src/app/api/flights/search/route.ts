@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-// Mock flights — swap this body for a real Amadeus call when ready.
+// Mock flights swap this body for a real Amadeus call when ready.
 // Field names follow the shape we'll receive from Amadeus Flight Offers Search.
 const mockResults = [
   {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-// Mock hotels — swap this body for a real Amadeus Hotel Search call when ready.
+// Mock hotels swap this body for a real Amadeus Hotel Search call when ready.
 const mockResults = [
   {
     id: "1",

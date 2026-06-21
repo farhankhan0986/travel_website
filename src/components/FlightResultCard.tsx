@@ -1,4 +1,6 @@
-import { Phone, Plane } from "lucide-react";
+"use client";
+
+import { Phone, Plane, Wifi, Utensils, BaggageClaim } from "lucide-react";
 import Button from "@/components/ui/Button";
 
 export interface FlightResult {
@@ -23,74 +25,148 @@ export default function FlightResultCard({ result }: { result: FlightResult }) {
   } = result;
 
   const stopsLabel = stops === 0 ? "Non-stop" : stops === 1 ? "1 stop" : `${stops} stops`;
+  const isNonStop  = stops === 0;
   const initials   = airline.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <article className="bg-white rounded-card border border-cream border-l-[3px] border-l-burg-deep hover:shadow-[0_4px_20px_rgba(0,0,0,0.07)] transition-shadow duration-200 p-[24px] flex flex-col gap-[18px]">
+    <article
+      className="group bg-white rounded-[18px] overflow-hidden transition-all duration-250 hover:shadow-[0_6px_28px_rgba(26,15,13,0.10)]"
+      style={{ border: "1px solid #EDE0CC", boxShadow: "0 2px 10px rgba(26,15,13,0.05)" }}
+    >
+      {/* Colored left accent bar */}
+      <div className="flex">
+        <div
+          className="w-[4px] shrink-0 rounded-l-[18px]"
+          style={{ background: isNonStop ? "#5C1828" : "#C9A84C" }}
+        />
 
-      {/* Airline row */}
-      <div className="flex items-center gap-[12px]">
-        <div className="w-[38px] h-[38px] rounded-full bg-burg-pale flex items-center justify-center shrink-0">
-          <span className="font-display font-semibold text-[13px] text-burg-deep leading-none">
-            {initials}
-          </span>
-        </div>
-        <p className="font-body text-caption text-warm-mid flex-1">
-          {airline} · {flightNumber}
-        </p>
-        <span className="font-body text-[11px] uppercase tracking-[0.08em] text-warm-mid border border-cream rounded-full px-[10px] py-[3px]">
-          {cabin}
-        </span>
-      </div>
+        <div className="flex-1 px-[24px] py-[20px]">
 
-      {/* Route row */}
-      <div className="flex items-center gap-[16px]">
+          {/* ── Top row: airline + cabin + non-stop badge ── */}
+          <div className="flex items-center gap-[10px] mb-[16px]">
+            {/* Airline initials bubble */}
+            <div
+              className="w-[42px] h-[42px] rounded-[12px] flex items-center justify-center shrink-0 font-display font-bold text-[14px] leading-none"
+              style={{ background: "#F5EAED", color: "#5C1828" }}
+            >
+              {initials}
+            </div>
 
-        <div className="shrink-0">
-          <p className="font-display font-medium text-[28px] text-warm-dark leading-none">
-            {departureTime}
-          </p>
-          <p className="font-body text-caption text-warm-mid mt-[5px]">{origin}</p>
-        </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-body font-medium text-[14px] text-warm-dark leading-none truncate">
+                {airline}
+              </p>
+              <p className="font-body text-[12px] text-warm-mid mt-[2px]">{flightNumber}</p>
+            </div>
 
-        <div className="flex flex-col items-center flex-1 min-w-0">
-          <p className="font-body text-caption text-warm-mid mb-[8px]">
-            {duration} · {stopsLabel}
-          </p>
-          <div className="flex items-center w-full">
-            <div className="h-px flex-1 bg-cream" />
-            <Plane size={12} className="text-burg-deep/50 mx-[6px] shrink-0" />
-            <div className="h-px flex-1 bg-cream" />
+            {/* Badges */}
+            <div className="flex items-center gap-[6px] shrink-0">
+              {isNonStop && (
+                <span
+                  className="font-body text-[10px] font-semibold uppercase tracking-[0.07em] px-[10px] py-[4px] rounded-full"
+                  style={{ background: "#F5EAED", color: "#5C1828" }}
+                >
+                  Non-stop
+                </span>
+              )}
+              <span
+                className="font-body text-[10px] uppercase tracking-[0.07em] px-[10px] py-[4px] rounded-full"
+                style={{ background: "#FAF7F2", color: "#6B5244", border: "1px solid #EDE0CC" }}
+              >
+                {cabin}
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div className="text-right shrink-0">
-          <p className="font-display font-medium text-[28px] text-warm-dark leading-none">
-            {arrivalTime}
-          </p>
-          <p className="font-body text-caption text-warm-mid mt-[5px]">{destination}</p>
-        </div>
+          {/* ── Main route row ── */}
+          <div className="flex items-center gap-[16px] mb-[16px]">
 
+            {/* Departure */}
+            <div className="shrink-0">
+              <p className="font-display font-semibold text-[30px] text-warm-dark leading-none">
+                {departureTime}
+              </p>
+              <p className="font-body text-[13px] text-warm-mid mt-[4px] font-medium">
+                {origin}
+              </p>
+            </div>
+
+            {/* Flight path */}
+            <div className="flex flex-col items-center flex-1 min-w-0 gap-[6px]">
+              <p className="font-body text-[12px] text-warm-mid">
+                {duration}
+              </p>
+              <div className="flex items-center w-full gap-[6px]">
+                <div className="h-[1.5px] flex-1 rounded-full" style={{ background: "#EDE0CC" }} />
+                <div
+                  className="w-[28px] h-[28px] rounded-full flex items-center justify-center shrink-0"
+                  style={{ background: isNonStop ? "#F5EAED" : "#FAF7F2", border: `1.5px solid ${isNonStop ? "#5C1828" : "#EDE0CC"}` }}
+                >
+                  <Plane size={12} style={{ color: isNonStop ? "#5C1828" : "#A89282" }} />
+                </div>
+                <div className="h-[1.5px] flex-1 rounded-full" style={{ background: "#EDE0CC" }} />
+              </div>
+              <p
+                className="font-body text-[11px] font-medium"
+                style={{ color: isNonStop ? "#5C1828" : "#C9A84C" }}
+              >
+                {stopsLabel}
+              </p>
+            </div>
+
+            {/* Arrival */}
+            <div className="text-right shrink-0">
+              <p className="font-display font-semibold text-[30px] text-warm-dark leading-none">
+                {arrivalTime}
+              </p>
+              <p className="font-body text-[13px] text-warm-mid mt-[4px] font-medium">
+                {destination}
+              </p>
+            </div>
+
+          </div>
+
+          {/* ── Bottom row: amenities + price + CTA ── */}
+          <div
+            className="flex items-center justify-between pt-[14px]"
+            style={{ borderTop: "1px solid #EDE0CC" }}
+          >
+            {/* Amenity icons */}
+            <div className="flex items-center gap-[14px]">
+              <div className="flex items-center gap-[5px] font-body text-[12px] text-warm-mid">
+                <Wifi size={13} style={{ color: "#A89282" }} />
+                <span>Wi-Fi</span>
+              </div>
+              <div className="flex items-center gap-[5px] font-body text-[12px] text-warm-mid">
+                <BaggageClaim size={13} style={{ color: "#A89282" }} />
+                <span>Bag included</span>
+              </div>
+              <div className="flex items-center gap-[5px] font-body text-[12px] text-warm-mid">
+                <Utensils size={13} style={{ color: "#A89282" }} />
+                <span>Meal</span>
+              </div>
+            </div>
+
+            {/* Price + actions */}
+            <div className="flex items-center gap-[16px] shrink-0">
+              <div className="text-right">
+                <p className="font-display font-semibold text-[26px] text-burg-deep leading-none">
+                  {currency} {price}
+                </p>
+                <p className="font-body text-[11px] text-warm-mid mt-[2px]">per person</p>
+              </div>
+              <div className="flex items-center gap-[8px]">
+                <Button variant="ghost">
+                  <Phone size={13} aria-hidden />
+                  Call us
+                </Button>
+                <Button variant="primary">Book now</Button>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
-
-      {/* Price + buttons */}
-      <div className="flex items-center justify-between pt-[14px] border-t border-cream">
-        <div>
-          <p className="font-display font-medium text-[24px] text-burg-deep leading-none">
-            {currency} {price}
-          </p>
-          <p className="font-body text-caption text-warm-mid mt-[3px]">per person</p>
-        </div>
-
-        <div className="flex items-center gap-[8px]">
-          <Button variant="ghost">
-            <Phone size={14} aria-hidden />
-            Call us
-          </Button>
-          <Button variant="primary">Book now</Button>
-        </div>
-      </div>
-
     </article>
   );
 }

@@ -20,7 +20,7 @@ export default function Home() {
       <Nav />
       <Hero activeTab={activeTab} setActiveTab={setActiveTab} />
       {/* 48px clearance for the SearchBox that protrudes 48px below the hero */}
-      <div className="pt-[0px]">
+      <div className="pt-0">
         <PhoneBar />
         <TrustStrip />
         <HowItWorks />

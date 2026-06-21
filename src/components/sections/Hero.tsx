@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import SearchBox from "@/components/ui/SearchBox";
 
 interface HeroProps {
@@ -7,84 +8,133 @@ interface HeroProps {
   setActiveTab: (tab: "flights" | "hotels") => void;
 }
 
-const stats: { value: string; label: string | null }[] = [
-  { value: "150K+", label: "Guests"  },
-  { value: "22",    label: "Years"   },
-  { value: "BBB A+", label: null     },
-];
-
 export default function Hero({ activeTab, setActiveTab }: HeroProps) {
-  return (
-    <section className="relative w-full h-screen bg-warm-dark">
+  const [scrolled, setScrolled] = useState(false);
 
-      {/* ── Videos (overflow-hidden scoped here, not on section) */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <section className="relative w-full h-screen bg-warm-dark overflow-hidden">
+
+      {/* ── Video backgrounds ── */}
+      <div className="absolute inset-0 z-0">
         <video
-          id="video-flights"
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[450ms]"
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
           style={{ opacity: activeTab === "flights" ? 1 : 0 }}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload={activeTab === "flights" ? "auto" : "metadata"}
+          autoPlay muted loop playsInline
           src="/videos/flights.mp4"
-          onLoadStart={(e) => { (e.currentTarget as HTMLVideoElement).style.display = "block"; }}
           onError={(e) => { (e.currentTarget as HTMLVideoElement).style.display = "none"; }}
         />
         <video
-          id="video-hotel"
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[450ms]"
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
           style={{ opacity: activeTab === "hotels" ? 1 : 0 }}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload={activeTab === "hotels" ? "auto" : "metadata"}
+          autoPlay muted loop playsInline
           src="/videos/hotel.mp4"
           onError={(e) => { (e.currentTarget as HTMLVideoElement).style.display = "none"; }}
         />
       </div>
 
-      {/* ── Dark scrim ─────────────────────────────────────── */}
-      <div className="absolute inset-0 z-10 bg-dark-scrim" />
+      {/* ── Single clean scrim  lets video breathe ── */}
+      <div
+        className="absolute inset-0 z-10"
+        style={{ background: "rgba(12,5,3,0.52)" }}
+      />
+      {/* Vignette  darkens edges, keeps center alive */}
+      <div
+        className="absolute inset-0 z-10 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 120% 100% at 50% 50%, transparent 40%, rgba(10,4,2,0.55) 100%)",
+        }}
+      />
 
-      {/* ── Hero copy ──────────────────────────────────────── */}
-      <div className="absolute inset-0 z-20 flex flex-col justify-center pl-20 pr-8">
-        <p className="font-body text-label text-white/60 uppercase tracking-[0.12em] mb-7">
-          Trusted by 150,000 American travelers
+      {/* ── Content ── */}
+      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-6 text-center">
+
+        {/* Eyebrow */}
+        <p
+          className="font-body text-[11px] uppercase tracking-[0.20em] mb-[32px]"
+          style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.20em" }}
+        >
+          Tripile · Est. 2022
         </p>
 
-        <h1 className="font-display font-semibold text-hero text-white tracking-[-0.02em] leading-[0.95] mb-6">
-          Travel the world with
-          <br />
-          <span className="italic text-gold-accent">confidence.</span>
+        {/* Headline */}
+        <h1
+          className="font-display font-semibold text-white leading-[0.94] tracking-[-0.025em] mb-[28px]"
+          style={{ fontSize: "clamp(56px, 8vw, 100px)" }}
+        >
+          Travel the world<br />
+          with{" "}
+          <em
+            className="not-italic"
+            style={{
+              background: "linear-gradient(90deg, #C9A84C 0%, #e8c97a 50%, #C9A84C 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            confidence.
+          </em>
         </h1>
 
-        <p className="font-body font-light text-body-lg text-white/80">
-          Real agents, available by phone. No hidden fees.
+        {/* Sub-copy */}
+        <p
+          className="font-body leading-[1.75] mb-[48px] max-w-[420px]"
+          style={{ fontSize: "17px", color: "rgba(255,255,255,0.58)" }}
+        >
+          Real agents. No bots. No hold music.
+          Just expert travel, one phone call away.
         </p>
-      </div>
 
-      {/* ── Stat row — 20px above SearchBox top edge ──────── */}
-      <div className="absolute left-20 bottom-[108px] z-20 flex items-baseline gap-5">
-        {stats.map(({ value, label }, i) => (
-          <span key={value} className="inline-flex items-baseline gap-1.5">
-            <span className="font-display font-medium text-[20px] text-white">
-              {value}
+        {/* SearchBox */}
+        <SearchBox
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          className="w-full max-w-[820px]"
+        />
+
+        {/* Stat strip */}
+        <div
+          className="flex items-center gap-[32px] mt-[48px]"
+          style={{ opacity: 0.5 }}
+        >
+          {[
+            { value: "150k+", label: "travelers" },
+            { value: "4+ yrs", label: "experience" },
+            { value: "4.97 ★", label: "rating" },
+          ].map(({ value, label }, i) => (
+            <span key={label} className="flex items-baseline gap-[6px]">
+              {i > 0 && (
+                <span className="w-px h-[14px] bg-white/20 mr-[32px] inline-block" />
+              )}
+              <span className="font-display font-medium text-[15px] text-white/80">{value}</span>
+              <span className="font-body text-[11px] uppercase tracking-[0.08em] text-white/35">{label}</span>
             </span>
-            {label && (
-              <span className="font-body text-label text-white/60">{label}</span>
-            )}
-            {i < stats.length - 1 && (
-              <span className="font-body text-label text-white/50 ml-2">·</span>
-            )}
-          </span>
-        ))}
+          ))}
+        </div>
+
       </div>
 
-      {/* ── SearchBox ───────────────────────────────────────── */}
-      <SearchBox activeTab={activeTab} setActiveTab={setActiveTab} />
+      {/* ── Scroll indicator ── */}
+      <div
+        className="absolute bottom-[32px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-[8px] transition-opacity duration-700"
+        style={{ opacity: scrolled ? 0 : 0.4 }}
+        aria-hidden
+      >
+        <div
+          className="w-[1px] h-[48px]"
+          style={{
+            background: "linear-gradient(to bottom, rgba(255,255,255,0.6), transparent)",
+          }}
+        />
+        <p className="font-body text-[9px] uppercase tracking-[0.18em] text-white">Scroll</p>
+      </div>
 
     </section>
   );

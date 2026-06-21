@@ -36,11 +36,57 @@
   --radius-nav-btn: 6px;
 }
 
-.date{
+.date {
   color: white;
 }
 
-/* ── Spacing tokens — reference with var() in components ─────────────── */
+/* ── Date input styling ─────────────────────────────────── */
+input[type="date"].date-white {
+  color-scheme: dark;
+  text-align: center;
+}
+
+input[type="date"].date-white::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.4);
+  opacity: 0.65;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+  scale: 1.1;
+  transition: opacity 0.2s;
+}
+
+input[type="date"].date-white::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Date picker popup  warm brand colors */
+::-webkit-datetime-edit-fields-wrapper {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+::-webkit-datetime-edit-text {
+  color: rgba(255, 255, 255, 0.35);
+  padding: 0 1px;
+}
+
+::-webkit-datetime-edit-month-field,
+::-webkit-datetime-edit-day-field,
+::-webkit-datetime-edit-year-field {
+  color: rgba(255, 255, 255, 0.75);
+  border-radius: 4px;
+  padding: 1px 2px;
+}
+
+::-webkit-datetime-edit-month-field:focus,
+::-webkit-datetime-edit-day-field:focus,
+::-webkit-datetime-edit-year-field:focus {
+  background: rgba(92, 24, 40, 0.55);
+  color: #fff;
+  outline: none;
+}
+
+/* ── Spacing tokens reference with var() in components ─────────────── */
 :root {
   --space-1: 4px;
   --space-2: 8px;
@@ -55,7 +101,7 @@
   --space-20: 80px;
   --space-24: 96px;
 
-  /* ── Type scale detail — line-height and tracking per spec ───────────── */
+  /* ── Type scale detail line-height and tracking per spec ───────────── */
   --leading-hero: 0.95;
   --leading-hero-sm: 1.0;
   --leading-section: 1.1;
@@ -89,7 +135,7 @@ body,
   -ms-overflow-style: none !important;
 }
 
-/* ── Reduced motion — disables all transitions per spec ──────────────── */
+/* ── Reduced motion disables all transitions per spec ──────────────── */
 @media (prefers-reduced-motion: reduce) {
 
   *,
